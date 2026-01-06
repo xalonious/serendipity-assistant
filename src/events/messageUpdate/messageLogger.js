@@ -1,0 +1,29 @@
+const { EmbedBuilder } = require("discord.js");
+
+module.exports = async (client, oldMessage, newMessage) => {
+  if (oldMessage.author.bot || oldMessage.attachments.size > 0 ) {
+    return;
+  }
+
+  if(oldMessage.content === newMessage.content) return;
+
+  try {
+    const logsChannel = oldMessage.guild.channels.cache.get("700785192356282438");
+
+    const editedContent = new EmbedBuilder()
+      .setTitle("Edited Message")
+      .addFields(
+        { name: "Author", value: `${oldMessage.author}`},
+        { name: "In", value: `${oldMessage.channel}`},
+        { name: "Old Message", value: oldMessage.content },
+        { name: "New Message", value: newMessage.content },
+        { name: "Message Link", value: `[Jump to Message](${newMessage.url})` }
+      )
+      .setThumbnail(oldMessage.author.displayAvatarURL({ dynamic: true }))
+      .setColor("Random");
+
+    await logsChannel.send({ embeds: [editedContent] });
+  } catch (error) {
+    return;
+  }
+};
